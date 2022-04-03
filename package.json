@@ -1,0 +1,11 @@
+{
+  "name": "faceit-proper-stats",
+  "version": "1.0.0",
+  "description": "FACEIT Advanced stats viewer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pito",
+  "license": "ISC"
+}
