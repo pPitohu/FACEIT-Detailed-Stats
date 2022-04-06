@@ -5,6 +5,10 @@
 /tmp
 /out-tsc
 
+*.png
+*.zip
+*.jpg
+
 # Runtime data
 pids
 *.pid
