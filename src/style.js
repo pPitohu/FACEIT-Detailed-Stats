@@ -99,6 +99,14 @@ const tooltip = `
         opacity: 0;
         animation: fadeInTooltip 0.2s ease-in-out forwards;
     }
+    .detailed-tooltip.top {
+        top: -5px;
+        left: 0;
+        transform: translateY(-100%);
+    }
+    .detailed-tooltip.small {
+        width: max-content;
+    }
     .detailed-stats-wrapper > div:hover {
         cursor: pointer;
     }
@@ -161,6 +169,17 @@ const styles = `
         background: #161616;
         border-radius: 4px;
     }
+    .detailed-stats-wrapper .support-link {
+        display: block;
+        padding: 7px 7px 0;
+        border-radius: 10px;
+        outline: 2px solid #202828;
+        transition: .25s ease-out;
+    }
+    .detailed-stats-wrapper .support-link:hover {
+        outline: 2px solid #384545;
+        border-radius: 14px;
+    }
     .detailed-stats-wrapper {
         display: flex;
         align-items: center;
@@ -173,7 +192,7 @@ const styles = `
         grid-template-columns: repeat(4, 1fr); 
         grid-template-rows: repeat(3, 1fr); 
         gap: 10px 10px;
-        background: linear-gradient(30deg, #0f0f0f 0%, #232828 100%); 
+        background: linear-gradient(30deg, #171717 0%, #2d3636 100%); 
         grid-template-areas: 
             "first first second second"
             "third fourth fourth fifth"
@@ -186,7 +205,8 @@ const styles = `
         justify-content: center;
         padding: 15px 15px;
         outline: 10px solid #1f1f1f;
-        border-radius: 4px;
+        border: 2px solid #202828;
+        border-radius: 10px;
         opacity: 0;
     }
     .stats-numbers {
@@ -216,7 +236,7 @@ const styles = `
         display: block;
         width: 1px;
         height: 120%;
-        background: #232828;
+        background: #3c3c3c;
         
     }
     .stats-block .stat:last-child:after {

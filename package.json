@@ -1,9 +1,10 @@
 {
   "name": "faceit-detailed-csgo-stats",
-  "version": "1.0.3",
+  "version": "1.2.0",
   "description": "FACEIT Advanced CSGO stats viewer",
   "main": "dist/index.js",
   "scripts": {
+    "dev": "webpack --watch --config webpack.config.js",
     "build": "webpack --config webpack.config.js"
   },
   "author": "pito",

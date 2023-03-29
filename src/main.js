@@ -44,12 +44,13 @@ const displayStats = async () => {
     try {
         prepareLayout();
         const currentUser = await getUser();
-        const currentCSGOStats = await getGameData(currentUser.player_id);
-        const currentHistory = await getHistory(currentUser.player_id);
+        const currentCSGOStatsData = getGameData(currentUser.player_id);
+        const currentHistoryData = getHistory(currentUser.player_id);
+        const [currentCSGOStats, currentHistory] = await Promise.all([currentCSGOStatsData, currentHistoryData]);
         const stats = await computeStats(currentCSGOStats, currentHistory);
-        // console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'Current user', currentUser);
-        // console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'currentCSGOStats', currentCSGOStats);
-        // console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'currentHistory', currentHistory);
+        console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'Current user', currentUser);
+        console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'currentCSGOStats', currentCSGOStats);
+        console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'currentHistory', currentHistory);
         console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'computed stats', stats);
         updateLayout(stats);
     } catch (e) {
@@ -75,16 +76,20 @@ const computeStats = async (current, history) => {
     const totalPenta = maps.reduce((acc, curr) => acc + parseInt(curr.stats['Penta Kills']), 0);
     const totalMatches = maps.reduce((acc, curr) => acc + parseInt(curr.stats['Matches']), 0);
     const totalWins = maps.reduce((acc, curr) => acc + parseInt(curr.stats['Wins']), 0);
+    const avgKills = (maps.reduce((acc, curr) => acc + parseFloat(curr.stats['Average Kills']), 0) / maps.length).toFixed(2);
+    const avgDeaths = (maps.reduce((acc, curr) => acc + parseFloat(curr.stats['Average Deaths']), 0) / maps.length).toFixed(2);
     const totalLosses = totalMatches - totalWins;
     const totalWinRate = ((totalWins / totalMatches) * 100).toFixed(2);
     const totalKD = (totalKills / totalDeaths).toFixed(2);
     const totalKDA = ((totalKills + totalAssists) / totalDeaths).toFixed(2);
     const totalHSR = (totalHeadshots / totalRounds).toFixed(2);
 
-    const lastWins = history.filter(match => match.teams[match.results.winner]?.players.map(player => player.nickname).includes(nickname)).length
-    const lastLosses = history.filter(match => !match.teams[match.results.winner]?.players.map(player => player.nickname).includes(nickname)).length
+    const lastWins = history.filter(match => match.teams[match.results.winner]?.players.map(player => player.nickname).includes(nickname)).length;
+    const lastWinsPercent = parseFloat((lastWins * 100 / history.length).toFixed(2));
+    const lastLosses = history.filter(match => !match.teams[match.results.winner]?.players.map(player => player.nickname).includes(nickname)).length;
+    const lastLossesPercent = parseFloat((lastLosses * 100 / history.length).toFixed(2));
 
-    const lastFiveMatchesStats = await getLastFiveMatchesStats(history.slice(0, 5), nickname);
+    const lastMatchesStats = await getLastMatchesStats(history.slice(0, 7), nickname);
 
     return {
         totalKills,
@@ -104,27 +109,41 @@ const computeStats = async (current, history) => {
         totalKDA,
         totalHSR,
         lastWins,
+        lastWinsPercent,
         lastLosses,
-        lastFiveMatchesStats
+        lastLossesPercent,
+        lastMatchesStats,
+        avgKills,
+        avgDeaths
     }
 }
 
-const getLastFiveMatchesStats = async (matches, nickname) => {
-    let res = await Promise.all(matches.map(match => axios.get(`${process.env.FACEIT_URL}/matches/${match.match_id}/stats`, authHeader)));
-    res = res.map(match => match.data.rounds[0]);
-    // find the player in every match and return the stats object of the current match
-    res = res.map(match =>
-        match.teams.find(team =>
-            team?.players.map(player => player.nickname).includes(nickname))?.players.find(player => player.nickname === nickname).player_stats);
-    console.log(res)
-    const kills = res.reduce((acc, stats) => acc + parseInt(stats?.['Kills'] || 0), 0);
-    const deaths = res.reduce((acc, stats) => acc + parseInt(stats?.['Deaths'] || 0), 0);
-    const headshots = res.reduce((acc, stats) => acc + parseInt(stats?.['Headshots'] || 0), 0);
-    const assists = res.reduce((acc, stats) => acc + parseInt(stats?.['Assists'] || 0), 0);
-    const triple = res.reduce((acc, stats) => acc + parseInt(stats?.['Triple Kills'] || 0), 0);
-    const quadro = res.reduce((acc, stats) => acc + parseInt(stats?.['Quadro Kills'] || 0), 0);
-    const penta = res.reduce((acc, stats) => acc + parseInt(stats?.['Penta Kills'] || 0), 0);
-    const MVPs = res.reduce((acc, stats) => acc + parseInt(stats?.['MVPs'] || 0), 0);
+const getLastMatchesStats = async (matchesData, nickname) => {
+    let res = await Promise.allSettled(matchesData.map(match => axios.get(`${process.env.FACEIT_URL}/matches/${match.match_id}/stats`, authHeader)));
+    res = res.filter(r => r.status === 'fulfilled').map(r => r.value)
+    const matches = res.map(match => match.data.rounds[0]);
+    console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, matches)
+
+    const matchTeams = matches.map(match => match.teams);
+    const playerMatches = matchTeams.map(matchTeam => matchTeam.find(team => team?.players.map(player => player.nickname).includes(nickname)));
+    const playerWinnerTeamIds = playerMatches.map(m => m.team_id);
+    const wonMatches = matches.filter((match, index) => match.round_stats["Winner"] === playerWinnerTeamIds[index]);
+    const playerStatsEachMatch = playerMatches.map(match => match.players.find(player => player.nickname === nickname).player_stats);
+
+    console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, playerStatsEachMatch, wonMatches);
+    const kills = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Kills'] || 0), 0);
+    const deaths = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Deaths'] || 0), 0);
+    const headshots = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Headshots'] || 0), 0);
+    const assists = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Assists'] || 0), 0);
+    const triple = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Triple Kills'] || 0), 0);
+    const quadro = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Quadro Kills'] || 0), 0);
+    const penta = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['Penta Kills'] || 0), 0);
+    const MVPs = playerStatsEachMatch.reduce((acc, stats) => acc + parseInt(stats?.['MVPs'] || 0), 0);
+    const avgKills = (kills / playerMatches.length).toFixed(2);
+    const avgDeaths = (deaths / playerMatches.length).toFixed(2);
+
+    const wins = wonMatches.length;
+    const losses = playerMatches.length - wonMatches.length;
     
     return {
         kills,
@@ -134,7 +153,11 @@ const getLastFiveMatchesStats = async (matches, nickname) => {
         triple,
         quadro,
         penta,
-        MVPs
+        MVPs,
+        wins,
+        losses,
+        avgKills,
+        avgDeaths
     }
 }
 
