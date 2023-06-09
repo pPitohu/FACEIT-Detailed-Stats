@@ -81,6 +81,13 @@ const keyframes = `
             opacity: 1;
         }
     }
+    
+
+    @keyframes rotate {
+        to {
+            transform: rotate(180deg);
+        }
+    }
 `
 
 const tooltip = `
@@ -104,7 +111,7 @@ const tooltip = `
         left: 0;
         transform: translateY(-100%);
     }
-    .detailed-tooltip.small {
+    .detailed-tooltip.content-width {
         width: max-content;
     }
     .detailed-stats-wrapper > div:hover {
@@ -166,8 +173,15 @@ const styles = `
     }
     .faceit-detailed-csgo-stats > .loader {
         padding: 30px 24px;
-        background: #161616;
-        border-radius: 4px;
+        background: #1f1f1f;
+        border-radius: 10px;
+        border: 2px solid #202828;
+        display: flex;
+        align-items: center;
+    }
+    .faceit-detailed-csgo-stats > .loader > .spinner {
+        margin-right: 10px;
+        animation: rotate .6s infinite ease-out;
     }
     .detailed-stats-wrapper .support-link {
         display: block;
@@ -186,6 +200,11 @@ const styles = `
         position: relative;
         width: 100%;
         gap: 20px;
+        margin: 20px 0;
+    }
+    .detailed-stats-wrapper > h1 {
+        text-transform: none;
+        margin: 0;
     }
     .detailed-stats-container {
         display: grid; 
@@ -204,7 +223,7 @@ const styles = `
         align-items: center;
         justify-content: center;
         padding: 15px 15px;
-        outline: 10px solid #1f1f1f;
+        outline: 10px solid #161616;
         border: 2px solid #202828;
         border-radius: 10px;
         opacity: 0;
@@ -236,8 +255,10 @@ const styles = `
         display: block;
         width: 1px;
         height: 120%;
-        background: #3c3c3c;
-        
+        background: #3c3c3c;    
+    }
+    .stats-block h3 {
+        margin-top: 0;
     }
     .stats-block .stat:last-child:after {
         display: none;

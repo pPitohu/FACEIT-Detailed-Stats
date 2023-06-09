@@ -8,20 +8,21 @@ const log_styles = 'color: #EBEFF3; background: #141616; padding: 2px 5px; borde
 const loadStyles = () => {
     const style = document.createElement('style');
     style.textContent = styles;
-    document.querySelector('parasite-player-profile-content').shadowRoot.appendChild(style);
+    document.querySelector('parasite-player-profile-content').firstChild.appendChild(style);
 }
 
 const prepareLayout = () => {
-    if (document.querySelector('parasite-player-profile-content').shadowRoot.querySelector('.faceit-detailed-csgo-stats')) return;
+    if (document.querySelector('parasite-player-profile-content').firstChild.querySelector('.faceit-detailed-csgo-stats')) return;
     loadStyles();
-    const layout = document.querySelector('parasite-player-profile-content').shadowRoot;
+    const layout = document.querySelector('parasite-player-profile-content').firstChild;
     const div = document.createElement('div')
     div.className = 'faceit-detailed-csgo-stats'
+    div.style = 'animation: fadeIn .5s linear forwards'
     div.innerHTML = preparedDiv
     layout.prepend(div);
 }
 const updateLayout = (stats) => {
-    const layout = document.querySelector('parasite-player-profile-content').shadowRoot;
+    const layout = document.querySelector('parasite-player-profile-content');
     layout.querySelector('.faceit-detailed-csgo-stats').innerHTML = updateDiv(stats);
 }
 
@@ -163,7 +164,7 @@ const getLastMatchesStats = async (matchesData, nickname) => {
 
 // url watcher
 if (prevUrl.includes('/stats/csgo')) setTimeout(() => displayStats(), 500);;
-setInterval(() => {
+const timeout = () => setTimeout(() => {
     if (prevUrl !== window.location.href) {
         prevUrl = window.location.href;
         console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'url changed');
@@ -172,4 +173,7 @@ setInterval(() => {
             displayStats();
         }
     }
-}, 500);
+    timeout()
+}, 500)
+
+timeout()

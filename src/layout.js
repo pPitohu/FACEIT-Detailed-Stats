@@ -10,12 +10,17 @@ const tooltip = `
         </div>
     </div>
 `
-const preparedDiv = `
-    <h1>Detailed Stats</h1>
-    <div class="loader">Loading...</div>
-`
 
 const supportIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><path fill="none" d="M0 0h24v24H0z"/><path d="M9.33 11.5h2.17A4.5 4.5 0 0 1 16 16H8.999L9 17h8v-1a5.578 5.578 0 0 0-.886-3H19a5 5 0 0 1 4.516 2.851C21.151 18.972 17.322 21 13 21c-2.761 0-5.1-.59-7-1.625L6 10.071A6.967 6.967 0 0 1 9.33 11.5zM4 9a1 1 0 0 1 .993.883L5 10V19a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h2zm9.646-5.425L14 3.93l.354-.354a2.5 2.5 0 1 1 3.535 3.536L14 11l-3.89-3.89a2.5 2.5 0 1 1 3.536-3.535z" fill="rgba(255,255,255,1)"/></svg>'
+
+const infoIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22ZM12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20ZM11 7H13V9H11V7ZM11 11H13V17H11V11Z" fill="rgba(255,255,255,1)"></path></svg>'
+
+const spinner = '<svg class="spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M5.46257 4.43262C7.21556 2.91688 9.5007 2 12 2C17.5228 2 22 6.47715 22 12C22 14.1361 21.3302 16.1158 20.1892 17.7406L17 12H20C20 7.58172 16.4183 4 12 4C9.84982 4 7.89777 4.84827 6.46023 6.22842L5.46257 4.43262ZM18.5374 19.5674C16.7844 21.0831 14.4993 22 12 22C6.47715 22 2 17.5228 2 12C2 9.86386 2.66979 7.88416 3.8108 6.25944L7 12H4C4 16.4183 7.58172 20 12 20C14.1502 20 16.1022 19.1517 17.5398 17.7716L18.5374 19.5674Z" fill="rgba(255,255,255,1)"></path></svg>'
+
+const preparedDiv = `
+    <h1 style="text-transform: none;">Detailed Stats</h1>
+    <div class="loader">${spinner}Loading...</div>
+`
 
 const updateDiv = ({
         totalKills,
@@ -45,14 +50,14 @@ const updateDiv = ({
     return `
         <div class="detailed-stats-wrapper">
             <div style="position: relative;">
-                <div class="detailed-tooltip top small">
+                <div class="detailed-tooltip top content-width">
                     <div class="detailed-tooltip-content">Support author</div>
                 </div>
                 <a class="support-link" href="https://www.donationalerts.com/r/ppitohu" target="_blank">${supportIcon}</a>
             </div>
             <h1>Detailed Stats</h1>
-            <div style="position: relative;">
-                <i class="sc-dIUggk bGCMgf"><svg class="sc-idOhPF sc-dmlrTW guKkvw" height="32" width="32" role="img" viewBox="0 0 24 24"><use xlink:href="#f_icon_f3343600"></use></svg></i>
+            <div style="position: relative; display: flex;">
+                ${infoIcon}
                 ${tooltip}
             </div>
         </div>
