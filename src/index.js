@@ -8,9 +8,10 @@ const init = () => {
 document.onreadystatechange = function () {
     if (document.readyState == "complete") {
         const interval = setInterval(() => {
-            if (document.querySelector('parasite-player-profile-content')) {
+            if (document.querySelector('#canvas-body [class^="styles__StatsNavWrapper-"]')) {
                 clearInterval(interval);
                 init();
+                console.log("Injected detailed stats");
             }
         }, 100);
         

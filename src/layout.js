@@ -1,4 +1,4 @@
-const availableMaps = ["de_inferno", "de_train", "de_dust2", "de_vertigo", "de_ancient", "de_overpass", "de_mirage", "de_nuke"];
+const availableMaps = ["Inferno", "Train", "Dust2", "Vertigo", "Ancient", "Overpass", "Mirage", "Nuke"];
 const tooltip = `
     <div class="detailed-tooltip">
         <div class="detailed-tooltip-content">

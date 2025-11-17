@@ -169,7 +169,8 @@ const media = `
 
 const styles = `
     .faceit-detailed-csgo-stats {
-        margin-bottom: 2.5rem;
+        margin-block: 2.5rem;
+        padding-inline: 12px;
     }
     .faceit-detailed-csgo-stats > .loader {
         padding: 30px 24px;

@@ -1,8 +1,8 @@
 {
     "update_url": "https://clients2.google.com/service/update2/crx",
-    "name": "FACEIT Detailed CSGO Stats",
-    "description": "Displaying detailed CSGO stats based on data from FACEIT API",
-    "version": "1.2.2",
+    "name": "FACEIT Detailed CS2 Stats",
+    "description": "Displaying detailed CS2 stats based on data from FACEIT API",
+    "version": "1.2.4",
     "manifest_version": 3,
     "minimum_chrome_version": "88",
     "host_permissions": [

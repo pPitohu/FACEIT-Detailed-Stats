@@ -8,13 +8,13 @@ const log_styles = 'color: #EBEFF3; background: #141616; padding: 2px 5px; borde
 const loadStyles = () => {
     const style = document.createElement('style');
     style.textContent = styles;
-    document.querySelector('parasite-player-profile-content').firstChild.appendChild(style);
+    document.querySelector('#canvas-body [class^="styles__StatsNavWrapper-"]').parentElement.appendChild(style);
 }
 
 const prepareLayout = () => {
-    if (document.querySelector('parasite-player-profile-content').firstChild.querySelector('.faceit-detailed-csgo-stats')) return;
+    if (document.querySelector('#canvas-body [class^="styles__StatsNavWrapper-"]').parentElement.querySelector('.faceit-detailed-csgo-stats')) return;
     loadStyles();
-    const layout = document.querySelector('parasite-player-profile-content').firstChild;
+    const layout = document.querySelector('#canvas-body [class^="styles__StatsNavWrapper-"]').parentElement;
     const div = document.createElement('div')
     div.className = 'faceit-detailed-csgo-stats'
     div.style = 'animation: fadeIn .5s linear forwards'
@@ -22,7 +22,7 @@ const prepareLayout = () => {
     layout.prepend(div);
 }
 const updateLayout = (stats) => {
-    const layout = document.querySelector('parasite-player-profile-content');
+    const layout = document.querySelector('#canvas-body [class^="styles__StatsNavWrapper-"]').parentElement;
     layout.querySelector('.faceit-detailed-csgo-stats').innerHTML = updateDiv(stats);
 }
 
@@ -32,12 +32,12 @@ const getUser = async () => {
 }
 
 const getGameData = async (id) => {
-    const res = await axios.get(`${process.env.FACEIT_URL}/players/${id}/stats/csgo`, authHeader)
+    const res = await axios.get(`${process.env.FACEIT_URL}/players/${id}/stats/cs2`, authHeader)
     return res.data;
 }
 
 const getHistory = async (id) => {
-    const res = await axios.get(`${process.env.FACEIT_URL}/players/${id}/history?game=csgo&offset=0&limit=20`, authHeader);
+    const res = await axios.get(`${process.env.FACEIT_URL}/players/${id}/history?game=cs2&offset=0&limit=20`, authHeader);
     return res.data.items;
 }
 
@@ -163,14 +163,16 @@ const getLastMatchesStats = async (matchesData, nickname) => {
 }
 
 // url watcher
-if (prevUrl.includes('/stats/csgo')) setTimeout(() => displayStats(), 500);;
+if (prevUrl.includes('/stats/cs2')) setTimeout(() => displayStats(), 500);
 const timeout = () => setTimeout(() => {
     if (prevUrl !== window.location.href) {
         prevUrl = window.location.href;
-        console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'url changed');
-        if (prevUrl.includes('/stats/csgo')) {
-            console.log('%c[FACEIT Detailed CSGO Stats]', log_styles, 'url contains /stats/csgo');
-            displayStats();
+        console.log('%c[FACEIT Detailed CS2 Stats]', log_styles, 'url changed');
+        if (prevUrl.includes('/stats/cs2')) {
+            console.log('%c[FACEIT Detailed CS2 Stats]', log_styles, 'url contains /stats/cs2');
+            setTimeout(() => {
+                displayStats();
+            }, 200);
         }
     }
     timeout()
